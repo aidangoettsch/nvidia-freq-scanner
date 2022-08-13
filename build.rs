@@ -6,8 +6,11 @@ fn main() {
         "--build",
         "benchmark-kernel/cmake-build-debug",
         "--target",
-        "benchmark_kernel"
+        "benchmark_kernel",
     ]);
     assert!(run_cmake.status().unwrap().success());
-    println!("cargo:rustc-link-search=native={}", std::env::var("CUDA_LIBRARY_PATH").unwrap());
+    println!(
+        "cargo:rustc-link-search=native={}",
+        std::env::var("CUDA_LIBRARY_PATH").unwrap()
+    );
 }

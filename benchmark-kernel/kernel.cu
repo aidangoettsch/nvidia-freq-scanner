@@ -8,7 +8,7 @@ __device__ unsigned int getGlobalIdx() {
     return threadId;
 }
 
-extern "C" __global__ void benchmarkWrite(unsigned long long* buffer, long long* threadSize) {
+extern "C" __global__ void benchmarkWrite(unsigned long long* buffer, const long long* threadSize) {
     unsigned int threadId = getGlobalIdx();
 
     unsigned long long* benchmarkBuffer = buffer + (threadId * (*threadSize));
@@ -33,12 +33,13 @@ extern "C" __global__ void benchmarkCopy(long long** a, long long** b, const lon
     memcpy(aBuf, bBuf, sizeof(long long) * *thread_size);
 }
 
-extern "C" __global__ void benchmarkRead(long long** pointers, const long long* thread_size, long long* errors) {
+extern "C" __global__ void benchmarkRead(unsigned long long* buffer, const long long* threadSize, long long* errors) {
     unsigned int threadId = getGlobalIdx();
-    long long* benchmarkBuffer = pointers[threadId];
+
+    unsigned long long* benchmarkBuffer = buffer + (threadId * (*threadSize));
     long long errCount = 0;
 
-    for (long long i = 0; i < *thread_size; i++) {
+    for (long long i = 0; i < *threadSize; i++) {
          errCount += (long long) (benchmarkBuffer[i] != i);
     }
 

@@ -1,22 +1,18 @@
+mod gui;
+mod number_input;
 mod test;
+mod plotters_iced;
 
-#[macro_use]
 extern crate rustacuda;
-extern crate rustacuda_derive;
 extern crate rustacuda_core;
+extern crate rustacuda_derive;
 
-use rustacuda::prelude::{CudaFlags};
-use rustacuda::memory::DeviceCopy;
-use rustacuda_core::DevicePointer;
-use nvapi_hi::KilohertzDelta;
+use iced::{Application, Settings};
+use rustacuda::CudaFlags;
 
 fn main() {
     // Initialize the CUDA API
-    rustacuda::init(CudaFlags::empty()).unwrap();
+    rustacuda::init(CudaFlags::empty()).expect("Failed to init CUDA");
 
-    let mut test = test::Test::new(0, 2048 * 2usize.pow(20), 10, 32, 256).unwrap();
-
-    for mem_clock in (0..10000).step_by(10000) {
-        test.test_at_point(KilohertzDelta(mem_clock)).unwrap();
-    }
+    gui::TestGui::run(Settings::default()).expect("Failed to start GUI");
 }
